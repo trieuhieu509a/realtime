@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Tteobokki Ha Dong</title>
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <!-- <link href="../dist/css/sb-admin-2.css" rel="stylesheet"> -->
+
+    <!-- Morris Charts CSS -->
+    <link href="../vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper" ng-app="myShoppingList" ng-controller="myCtrl" ng-init="init()"> 
+        <!-- Navigation -->
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">Tteobokki Ha Dong CRM</a>
+            </div>
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="index.html">Bán hàng</a></li>
+              <li><a href="dashboard.html">Dash Board</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <div id="page-wrapper">
+            <!-- /.row -->
+            <style type="text/css">
+                @media (min-width: 992px){
+                    .dish-img img{
+                        width: 80px;
+                        height: 80px;
+                    }
+                    .form-horizontal .control-label {
+                        text-align: left;
+                        padding-top: 30px;
+                    }                
+                    .form-group{
+                        border: none;
+                    }
+                }
+
+                 @media (min-width: 768px){
+                    /* .dish-img img {
+                        width: 245px;
+                        height: 247px;
+                    }
+                    .form-horizontal .control-label {
+                        padding-top: 0px;
+                    } */
+                } 
+
+                form.tab-form-demo .tab-pane {
+                    margin: 20px 20px;
+                }
+                .dish-img{
+                    text-align: right;
+                }
+                .panel-default{
+                    margin: 10px;
+                }
+                .form-horizontal input{
+                    margin-top: 23px; 
+                }
+                .form-group {
+                    margin-bottom: 5px;
+                }
+                .page-header {
+                    padding-bottom: 9px;
+                    margin: 0px 20px;
+                    border-bottom: 1px solid #eee;
+                }
+                .row{
+                    margin-left: -5px;
+                    margin-right: -5px;
+                }
+                .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
+                    padding-left: 5px;
+                    padding-right: 5px;
+                }
+                .panel-heading{
+                    font-weight: 700;
+                }
+                .form-horizontal .form-group .col-md-6{
+                    border: 2px solid;
+                    border-bottom-right-radius: 2em;
+                }
+                .havelabel{
+                    position: relative;
+                }
+                .smalllabel{
+                    position: absolute;
+                    font-weight: 700;
+                    font-size: 12px;
+                    top: 6px;
+                    left: 10px;
+                }
+                .form-control{
+                    padding: 2px;
+                }
+            </style>
+
+            <div>
+                <uib-tabset active="active">
+                    <uib-tab index="form.id" ng-repeat="form in forms" heading="{{form.name}}">
+                        
+                        <div class="panel panel-default">
+                            <form class="form-horizontal" name="{{ form.absname }}">
+                                <div class="panel-heading">
+
+                                    <div class="row" style="line-height: 30px;">
+                                            <div class="col-md-3">
+                                                <span class="text-success">Tổng tiền : </span>{{ form.total | currency:"VND$": 0 }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-4 text-primary">Khách Trả : </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" min="0" class="form-control col-md-8" style="margin-top: 0px;" ng-model="form.pay" value="{{ form.pay }}" ng-change=new_pay(form)>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span class=" text-danger">Tiền thừa : </span>{{ form.refund | currency:"VND$": 0 }}
+                                            </div>
+                                            <div class="col-md-2 ">
+                                                <button type="button" class="btn btn-success" ng-click=new_order()>Cập nhật bếp</button>
+                                            </div>
+                                        </div>
+                                </div>
+
+
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6" ng-repeat="dish in form.dishs">
+                                            <div class="form-group">
+                                                <div class="dish-img col-xs-12 col-sm-4 col-md-2">
+                                                    <img ng-src="images/{{ dish.img }}" alt="">
+                                                </div>
+                                                <div class=" col-xs-12 col-sm-8 col-md-10">
+                                                    <label class="control-label col-md-3">{{ dish.name }}:</label>
+                                                    <div class=" col-xs-12 col-md-2 havelabel">
+                                                      <div class="smalllabel">Giá</div>
+                                                      <!-- <label class="control-label col-sm-6">Giá:</label> -->
+                                                      <input type="number" min="0" class="price col-sm-6 form-control" name="price" value="{{ dish.price | number:0 }}" ng-model="dish.price" readonly>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-2 havelabel">
+                                                      <div class="smalllabel">Số lượng</div>
+                                                      <input type="number" min="0" class="quantity form-control" name="quantity" value="{{ dish.quantity | number:0 }}" ng-model="dish.quantity" ng-change="new_quantity(dish, form);">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-2 havelabel">
+                                                      <div class="smalllabel">Phục vụ</div>
+                                                      <input type="number" min="0" class="quantity form-control" name="sub" value="{{ dish.sub | number:0 }}" ng-model="dish.sub"  ng-change="new_sub(dish);">
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-2 havelabel">
+                                                      <div class="smalllabel">$</div>
+                                                      <input type="number" min="0" class="money form-control" name="money" ng-model="dish.money" value="{{ dish.money }}" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../vendor/raphael/raphael.min.js"></script>
+    <script src="../vendor/morrisjs/morris.min.js"></script>
+    <!--<script src="../data/morris-data.js"></script>-->
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+
+    <script src="../../socket.io/socket.io.js"></script>
+    <script src="../js/angular.min.js"></script>
+    <script src="../js/ui-bootstrap-tpls-2.3.0.min.js"></script>
+
+    <script>
+        var app = angular.module('myShoppingList', ['ui.bootstrap']);
+
+        app.controller('myCtrl', function($scope, $timeout, $window) {
+
+            $scope.forms = [];
+            var socket = io();
+            $scope.init = function(){
+                socket.emit('sale-init-get');
+
+                socket.on('sale-init-result',function(data){
+                    
+                    angular.forEach(data.tables, function(table, key) {
+                        table.total = 0;
+                        table.pay = 0;
+                        table.refund = 0;
+                        table.dishs = angular.copy(data.dishs);
+                        $scope.forms.push(table);
+                    });
+                    $scope.$apply();
+                });
+            }
+            
+            $scope.new_quantity = function(dish, form){
+                
+                dish.money = parseInt(dish.price) * parseInt(dish.quantity);
+
+                var total = 0;
+                angular.forEach(form.dishs , function(item){
+                    item.money = item.money || 0;
+                    total+= parseInt(item.money);
+                });
+                form.total = total;
+
+                $scope.new_pay(form);
+                $scope.new_sub(dish);
+            }
+
+            $scope.new_sub = function(dish){
+                var quantity = dish.quantity || 0;
+                var sub = dish.sub || 0;
+                
+                dish.remain = (parseInt(quantity) - parseInt(sub) > 0) ? parseInt(quantity) - parseInt(sub) : 0 ;
+            }
+
+            $scope.new_pay = function(form){
+                var pay = form.pay || 0;
+                var total = form.total || 0;
+                form.refund = (parseInt(pay) - parseInt(total)) > 0 ? parseInt(pay) - parseInt(total) : 0 ;
+            }
+
+            $scope.new_order = function(){
+                var remains = {};
+                angular.forEach($scope.forms, function(form, f) {
+
+                    angular.forEach(form.dishs, function(dish, d) {
+
+                        var remain = dish.remain || 0;
+                        remains[dish.id] = remains[dish.id] || 0;
+
+                        remains[dish.id] += remain;
+                         
+                    });
+
+                });
+
+                console.log(remains);
+                socket.emit('new-order', remains);
+
+            }
+
+            socket.on('new-order',function(data){
+                console.log(data);
+            });
+        });
+    </script>
+</body>
+
+</html>
